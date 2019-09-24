@@ -22,6 +22,7 @@ def get_all_users():
     # Render some HTML containing the list of all users
     return """
     <a href="/new_user">New User</a>
+    <a href="/delete_user">Delete User</a>
     <br><br>
     Users: {}
     """.format(users_json)
@@ -36,6 +37,17 @@ def new_user_form():
         Password: <input name='password' type='password'/>
         Bio: <textarea name='bio'></textarea>
         <button type='submit'>Submit</button>
+    </form>
+    """
+
+@app.route('/delete_user')
+def delete_user_form():
+    """Display an HTML form for user deletion."""
+
+    return """
+    <form action='/delete_user' method='POST'>
+        Username: <input name='username' type='text'/>
+        <button type='submit'>Delete User</button>
     </form>
     """
 
@@ -56,6 +68,19 @@ def create_user():
     # Render some HTML
     return """
     User created successfully!
+    <a href="/users">Back to Home</a>
+    """
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    """Delete a user by username."""
+
+    # Insert into PyMongo database
+    db.users.delete_one({'username': request.form.get('username')})
+
+    # Render some HTML
+    return """
+    User deleted successfully!
     <a href="/users">Back to Home</a>
     """
 
